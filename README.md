@@ -1,6 +1,6 @@
 # agent-watcher
 
-A Claude Code skill that periodically checks whether the coding agent has drifted from its stated goal — and intervenes when it has.
+A pair of Claude Code skills — `watcher` and `goal-set` — that periodically check whether the coding agent has drifted from its stated goal, and intervene when it has.
 
 ## What it does
 
@@ -20,11 +20,17 @@ Run `/watcher` (or `/loop 5m /watcher`) and the watcher will:
 
 ## Install
 
+This repo holds two skills — `watcher` and `goal-set` — that install side by side. `goal.py` (goal read/write) lives under `watcher/scripts/` and is shared by both; `goal-set` references it by relative path, so the two must be installed together.
+
 ```bash
-git clone https://github.com/aishaneeshah/agent-watcher ~/.claude/skills/watcher
+git clone https://github.com/aishaneeshah/agent-watcher ~/agent-watcher
+ln -s ~/agent-watcher/skills/watcher ~/.claude/skills/watcher
+ln -s ~/agent-watcher/skills/goal-set ~/.claude/skills/goal-set
 ```
 
-That's it. The skills are picked up automatically by Claude Code.
+Maintainers/contributors can instead run `scripts/link-skills.sh` from a checkout, which symlinks both skills into `~/.claude/skills` **and** `~/.agents/skills` (the shared path read by Codex, Cursor, and other Agent Skills-compatible harnesses) in one step.
+
+The skills are picked up automatically once linked.
 
 ## Usage
 
@@ -82,7 +88,10 @@ history:
 
 ## Adding support for another harness
 
-Implement `BaseExtractor` in `scripts/extractors/your_harness.py`, register it in `scripts/extractors/__init__.py`, and set `WATCHER_HARNESS=your-harness` in your environment.
+Two independent things travel per harness:
+
+- **Transcript extraction** — implement `BaseExtractor` in `skills/watcher/scripts/extractors/your_harness.py`, register it in `skills/watcher/scripts/extractors/__init__.py`, and set `WATCHER_HARNESS=your-harness` in your environment.
+- **Skill metadata** — each skill's `agents/openai.yaml` sidecar (next to its `SKILL.md`) carries UI metadata for Codex-style harnesses (`display_name`, `short_description`). The instructions in `SKILL.md` itself are never duplicated per harness — only this thin sidecar varies.
 
 ## Rules
 

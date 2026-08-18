@@ -1,0 +1,3 @@
+interface:
+  display_name: "Watcher"
+  short_description: "Checks the session for goal drift and intervenes if needed"

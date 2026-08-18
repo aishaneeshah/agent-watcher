@@ -1,0 +1,3 @@
+interface:
+  display_name: "Goal Set"
+  short_description: "Set or update the session's goal anchor for the watcher"
