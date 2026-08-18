@@ -86,6 +86,15 @@ history:
       updated_at: "2026-07-26T09:00:00+00:00"
 ```
 
+## Supported harnesses
+
+| Harness | Transcript extraction | Notes |
+|---------|------------------------|-------|
+| Claude Code | `extractors/claude_code.py` | Reads `~/.claude/projects/*/*.jsonl`. Session id from `$CLAUDE_CODE_SESSION_ID`. |
+| Codex CLI | `extractors/codex.py` | Reads `$CODEX_HOME/sessions/YYYY/MM/DD/rollout-*.jsonl` (default `~/.codex`). Codex exposes no session-id env var, so it falls back to the most recently modified rollout file. |
+
+`WATCHER_HARNESS` forces a specific extractor (`claude-code` or `codex`); otherwise `auto_detect()` picks one from environment signals, preferring the running harness's own env var over a config directory merely existing on disk.
+
 ## Adding support for another harness
 
 Two independent things travel per harness:
